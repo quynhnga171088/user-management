@@ -3,6 +3,7 @@ package com.example.usermanagement.service;
 import com.example.usermanagement.dto.AuthRequest;
 import com.example.usermanagement.dto.AuthResponse;
 import com.example.usermanagement.dto.UserDto;
+import com.example.usermanagement.exception.BusinessException;
 import com.example.usermanagement.model.Role;
 import com.example.usermanagement.model.User;
 import com.example.usermanagement.repository.UserRepository;
@@ -88,7 +89,7 @@ public class AuthServiceTest {
     void register_EmailAlreadyExists() {
         when(userRepository.existsByEmail(any(String.class))).thenReturn(true);
 
-        assertThrows(RuntimeException.class, () -> authService.register(userDto));
+        assertThrows(BusinessException.class, () -> authService.register(userDto));
 
         verify(userRepository, never()).save(any(User.class));
     }
@@ -116,6 +117,6 @@ public class AuthServiceTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> authService.login(authRequest));
+        assertThrows(BusinessException.class, () -> authService.login(authRequest));
     }
 }

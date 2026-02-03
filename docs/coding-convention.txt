@@ -1,0 +1,162 @@
+BACKEND CODING CONVENTION
+Version: 1.0
+Scope: Backend Services
+Primary Target: Java (Spring Boot style, but framework-agnostic rules)
+Purpose: Enforce clean architecture, maintainability, testability, and safety.
+
+==================================================
+1. ARCHITECTURE & LAYERING
+==================================================
+1.1 Controllers must only handle:
+    - Request validation
+    - Response mapping
+1.2 Controllers must NOT contain:
+    - Business logic
+    - Transaction logic
+    - Repository calls
+1.3 Business logic must reside in Service layer.
+1.4 Repository layer must only handle data access.
+1.5 Cross-layer calls are forbidden (e.g. Controller → Repository).
+1.6 Domain logic must not depend on infrastructure frameworks.
+1.7 Circular dependencies between modules are forbidden.
+
+==================================================
+2. PACKAGE & MODULE STRUCTURE
+==================================================
+2.1 Packages must reflect responsibility, not technical type only.
+2.2 Feature-based structure is preferred over layer-based when possible.
+2.3 Public APIs of a module must be explicitly defined.
+2.4 Internal classes must not be accessed outside their module.
+
+==================================================
+3. NAMING CONVENTIONS
+==================================================
+3.1 Class names must use PascalCase.
+3.2 Method and variable names must use camelCase.
+3.3 Constants must use UPPER_SNAKE_CASE.
+3.4 Boolean methods must start with:
+    - is
+    - has
+    - can
+    - should
+3.5 Interface names must describe behavior, not implementation.
+3.6 Test class names must end with "Test".
+
+==================================================
+4. METHODS & FUNCTIONS
+==================================================
+4.1 A method must have a single responsibility.
+4.2 A method must not exceed 30 lines.
+4.3 A method must not have more than 5 parameters.
+4.4 Public methods must have JavaDoc.
+4.5 Methods must not return null:
+    - Use Optional or explicit exceptions.
+4.6 Side effects must be clearly documented.
+4.7 Overloaded methods should be avoided unless strongly justified.
+
+==================================================
+5. ERROR HANDLING & EXCEPTIONS
+==================================================
+5.1 Catching generic Exception or Throwable is forbidden.
+5.2 Business errors must use custom exception types.
+5.3 Exceptions must not be silently swallowed.
+5.4 Controllers must not contain try/catch blocks.
+5.5 Errors must be logged with meaningful context.
+5.6 Error messages must not leak sensitive data.
+
+==================================================
+6. DEPENDENCY INJECTION
+==================================================
+6.1 Field injection is forbidden.
+6.2 Constructor injection is mandatory.
+6.3 Static access to injected dependencies is forbidden.
+6.4 Service-to-service calls must use interfaces where applicable.
+
+==================================================
+7. DATA & DATABASE
+==================================================
+7.1 Entities must not contain business logic.
+7.2 Entities must represent persistence state only.
+7.3 Repositories must not implement business rules.
+7.4 Native SQL is forbidden unless explicitly approved.
+7.5 Transactions must be defined at Service layer.
+7.6 Lazy-loading side effects must be avoided in business logic.
+
+==================================================
+8. API & DTOs
+==================================================
+8.1 Controllers must not expose Entity objects directly.
+8.2 Request and Response must use DTOs.
+8.3 DTOs must be immutable where possible.
+8.4 API responses must be explicit and predictable.
+8.5 Versioning must be considered for public APIs.
+
+==================================================
+9. SECURITY
+==================================================
+9.1 Secrets must never be hardcoded.
+9.2 User input must always be validated.
+9.3 Authentication and authorization must not be bypassed.
+9.4 Sensitive data must never be logged.
+9.5 Access control logic must be testable.
+
+==================================================
+10. LOGGING & OBSERVABILITY
+==================================================
+10.1 Use a standard logging framework (e.g. SLF4J).
+10.2 System.out / System.err are forbidden.
+10.3 Logs must include sufficient context for debugging.
+10.4 Excessive logging inside loops is forbidden.
+10.5 Log level must reflect severity correctly.
+
+==================================================
+11. TESTING
+==================================================
+11.1 Every Service must have unit tests.
+11.2 Every bug fix must include a regression test.
+11.3 Tests must be deterministic and repeatable.
+11.4 Tests must not depend on execution order.
+11.5 External systems must be mocked or stubbed.
+11.6 Code without tests is considered incomplete.
+
+==================================================
+12. CODE QUALITY
+==================================================
+12.1 Unused imports, variables, and methods are forbidden.
+12.2 Commented-out code is forbidden.
+12.3 TODO or FIXME comments are forbidden in production code.
+12.4 Duplicate logic must be refactored.
+12.5 Cyclomatic complexity must be kept low.
+
+==================================================
+13. PERFORMANCE
+==================================================
+13.1 Avoid premature optimization.
+13.2 Inefficient algorithms must be justified.
+13.3 Blocking calls in critical paths must be avoided.
+13.4 Resource usage must be predictable.
+
+==================================================
+14. DOCUMENTATION
+==================================================
+14.1 Public APIs must be documented.
+14.2 Complex logic must include explanatory comments.
+14.3 Documentation must be kept in sync with code.
+
+==================================================
+15. AI REVIEW RULES
+==================================================
+15.1 Any violation of this file must be reported as a GitHub Issue.
+15.2 Issue title must include:
+     [CONVENTION-BACKEND-<RULE_ID>]
+15.3 Issue body must include:
+     - File path
+     - Violated rule
+     - Explanation
+     - Code snippet
+15.4 The Agent must not auto-fix violations unless instructed.
+15.5 Code must not be merged until all violations are resolved.
+
+==================================================
+END OF CODING CONVENTION
+==================================================

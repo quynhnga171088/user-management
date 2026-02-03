@@ -3,6 +3,7 @@ package com.example.usermanagement.service;
 import com.example.usermanagement.dto.AuthRequest;
 import com.example.usermanagement.dto.AuthResponse;
 import com.example.usermanagement.dto.UserDto;
+import com.example.usermanagement.exception.BusinessException;
 import com.example.usermanagement.model.Role;
 import com.example.usermanagement.model.User;
 import com.example.usermanagement.repository.UserRepository;
@@ -14,13 +15,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 import java.util.Set;
 
+/**
+ * Service for handling authentication and registration.
+ */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
 
         private final UserRepository userRepository;
@@ -29,9 +35,17 @@ public class AuthService {
         private final AuthenticationManager authenticationManager;
         private final CustomUserDetailsService userDetailsService;
 
+        /**
+         * Registers a new user.
+         *
+         * @param request the UserDto containing registration details.
+         * @return an AuthResponse containing the JWT token.
+         * @throws BusinessException if the email already exists.
+         */
+        @Transactional
         public AuthResponse register(UserDto request) {
                 if (userRepository.existsByEmail(request.getEmail())) {
-                        throw new RuntimeException("Email already exists");
+                        throw new BusinessException("Email already exists");
                 }
 
                 var user = User.builder()
@@ -60,13 +74,20 @@ public class AuthService {
                                 .build();
         }
 
+        /**
+         * Authenticates a user.
+         *
+         * @param request the AuthRequest containing email and password.
+         * @return an AuthResponse containing the JWT token.
+         * @throws BusinessException if authentication fails or user is not found.
+         */
         public AuthResponse login(AuthRequest request) {
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(
                                                 request.getEmail(),
                                                 request.getPassword()));
                 var user = userRepository.findByEmail(request.getEmail())
-                                .orElseThrow();
+                                .orElseThrow(() -> new BusinessException("User not found"));
                 UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
                 var jwtToken = jwtUtils.generateToken(userDetails);
 
