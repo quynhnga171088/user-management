@@ -1,6 +1,7 @@
 package com.example.usermanagement.service;
 
 import com.example.usermanagement.dto.UserDto;
+import com.example.usermanagement.exception.BusinessException;
 import com.example.usermanagement.model.Role;
 import com.example.usermanagement.model.User;
 import com.example.usermanagement.repository.UserRepository;
@@ -79,7 +80,7 @@ public class UserServiceTest {
     void getUserById_NotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> userService.getUserById(1L));
+        assertThrows(BusinessException.class, () -> userService.getUserById(1L));
     }
 
     @Test
@@ -99,7 +100,7 @@ public class UserServiceTest {
     void createUser_EmailExists() {
         when(userRepository.existsByEmail(any(String.class))).thenReturn(true);
 
-        assertThrows(RuntimeException.class, () -> userService.createUser(userDto));
+        assertThrows(BusinessException.class, () -> userService.createUser(userDto));
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -133,7 +134,7 @@ public class UserServiceTest {
     void deleteUser_NotFound() {
         when(userRepository.existsById(1L)).thenReturn(false);
 
-        assertThrows(RuntimeException.class, () -> userService.deleteUser(1L));
+        assertThrows(BusinessException.class, () -> userService.deleteUser(1L));
         verify(userRepository, never()).deleteById(anyLong());
     }
 }

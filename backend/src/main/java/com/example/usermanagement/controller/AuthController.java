@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for handling authentication and registration.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -16,11 +19,23 @@ public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * Registers a new user.
+     *
+     * @param request the UserDto containing registration details.
+     * @return a ResponseEntity containing the AuthResponse.
+     */
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody UserDto request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    /**
+     * Authenticates a user.
+     *
+     * @param request the AuthRequest containing email and password.
+     * @return a ResponseEntity containing the AuthResponse.
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         return ResponseEntity.ok(authService.login(request));

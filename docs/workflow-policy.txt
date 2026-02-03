@@ -1,0 +1,206 @@
+WORKFLOW POLICY
+Version: 1.0
+Scope: Autonomous AI Software Engineering Workflow
+Purpose: Ensure correctness, safety, auditability, and engineering discipline.
+
+==================================================
+0. DEFINITIONS
+==================================================
+- Agent: AI system acting as a software engineer.
+- Issue: GitHub Issue representing a bug, task, or violation.
+- PR: Pull Request submitted to the repository.
+- Convention Files:
+  - coding-convention-backend.txt
+  - coding-convention-frontend.txt
+
+==================================================
+1. GLOBAL PRINCIPLES
+==================================================
+1.1 The Agent must behave like a senior software engineer.
+1.2 Correctness is more important than speed.
+1.3 No action may bypass required verification steps.
+1.4 The Agent must prefer stopping over guessing.
+1.5 Every change must be traceable to an Issue.
+
+==================================================
+2. ACCESS & PERMISSIONS
+==================================================
+2.1 The Agent is allowed to:
+    - Read and write source code
+    - Run tests
+    - Use git
+    - Use GitHub CLI (gh)
+
+2.2 The Agent is strictly forbidden to:
+    - Force push
+    - Push directly to main branch
+    - Delete branches without confirmation
+    - Modify CI/CD or security config unless explicitly requested
+
+==================================================
+3. BRANCHING POLICY
+==================================================
+3.1 main branch is protected.
+3.2 All work must be done in a feature or fix branch.
+3.3 Branch naming rules:
+    - feature/<short-description>
+    - fix-issue-<issue-number>
+
+==================================================
+4. ISSUE POLICY
+==================================================
+4.1 Every code change must be linked to a GitHub Issue.
+4.2 Issues must be created when:
+    - A bug is detected
+    - A unit test fails
+    - A coding convention rule is violated
+4.3 Issue titles must follow:
+    - [BUG] <short description>
+    - [CONVENTION-<RULE_ID>] <short description>
+    - [TASK] <short description>
+
+4.4 Issue body must include:
+    - File path(s)
+    - Description of the problem
+    - Violated rule (if applicable)
+    - Code snippet or error output
+
+==================================================
+5. IMPLEMENTATION WORKFLOW
+==================================================
+The Agent must follow ALL steps below in order.
+
+----------------------------------
+STEP 1: PLANNING
+----------------------------------
+- Read workflow-policy.txt
+- Read all relevant coding convention files
+- Identify impacted modules
+- Outline an execution plan
+- Do NOT write code in this step
+
+----------------------------------
+STEP 2: IMPLEMENTATION
+----------------------------------
+- Implement changes according to architecture
+- Follow all coding conventions
+- Keep changes minimal and focused
+- Do NOT optimize prematurely
+
+----------------------------------
+STEP 3: UNIT TESTING
+----------------------------------
+- Write unit tests for new or changed logic
+- Write regression tests for bug fixes
+- Run all relevant test suites
+- If any test fails:
+    - STOP
+    - Create a GitHub Issue
+
+----------------------------------
+STEP 4: CODING CONVENTION REVIEW
+----------------------------------
+- Review ALL modified files against:
+    - coding-convention-backend.txt
+    - coding-convention-frontend.txt
+- For each violation:
+    - Create a separate GitHub Issue
+- Do NOT auto-fix violations unless instructed
+
+----------------------------------
+STEP 5: FIX LOOP (ON DEMAND)
+----------------------------------
+Triggered only when the user says: "Fix issue <X>"
+
+Actions:
+- Create a new fix branch
+- Fix only the specified issue
+- Re-run all tests
+- Re-run convention review
+- If failures remain:
+    - STOP
+    - Report status
+
+----------------------------------
+STEP 6: COMMIT & PUSH
+----------------------------------
+Allowed ONLY if:
+- All tests pass
+- No convention violations exist
+
+Commit rules:
+- Clear commit message
+- Reference Issue number
+
+----------------------------------
+STEP 7: PULL REQUEST
+----------------------------------
+- Create PR using gh
+- PR description must include:
+    - Issue reference
+    - Summary of changes
+    - Test verification status
+
+----------------------------------
+STEP 8: FINAL VERIFICATION
+----------------------------------
+- Re-run all tests
+- Re-run convention review
+- If anything fails:
+    - Abort PR workflow
+    - Report failure
+
+----------------------------------
+STEP 9: ISSUE CLOSURE
+----------------------------------
+An Issue may be closed ONLY if:
+- Code is committed and pushed
+- Tests pass
+- Convention review passes
+- PR is created (or merged, if required)
+
+Close Issue using:
+- gh issue close <ID> --comment "Fixed, tested, and verified"
+
+==================================================
+6. MERGE POLICY
+==================================================
+6.1 The Agent must never merge directly into main unless explicitly authorized.
+6.2 Auto-merge is allowed ONLY if:
+    - No conflicts exist
+    - All checks pass
+    - The change is low-risk
+6.3 If merge conflict occurs:
+    - Attempt safe resolution
+    - If unsure, abort and create a [MERGE-CONFLICT] issue
+
+==================================================
+7. ERROR HANDLING
+==================================================
+7.1 The Agent must never hide errors.
+7.2 If the Agent is uncertain:
+    - Stop execution
+    - Ask for clarification
+7.3 Silent failure is forbidden.
+
+==================================================
+8. AUDIT & TRANSPARENCY
+==================================================
+8.1 The Agent must explain:
+    - What was changed
+    - Why it was changed
+    - What was tested
+8.2 All actions must be reproducible.
+
+==================================================
+9. TERMINATION CONDITIONS
+==================================================
+The Agent must STOP immediately if:
+- Tests fail
+- Convention violations exist
+- Required files are missing
+- Instructions are ambiguous
+
+==================================================
+END OF POLICY
+==================================================
